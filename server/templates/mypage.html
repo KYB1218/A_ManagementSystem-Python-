@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Equipent List</title>
+   <style>
+      /* 스타일링은 선택 사항입니다. */
+      button {
+         padding: 10px 20px;
+         font-size: 16px;
+      }
+   </style>
+</head>
+<body>
+
+   <table border="1">
+      <thead>
+         <tr>
+            <th>Equipment</th>
+            <th>Password</th>
+            <th>File</th>
+            <th>State</th>
+            <th>Action</th>
+         </tr>
+      </thead>
+      <h1>로그인을 성공했습니다.</h1>
+
+      {% for row in rows %}
+         <tr>
+            <td>{{ row["equipment"] }}</td>
+            <td>{{ row["password"] }}</td>
+            <td>{{ row["filename"] }}</td>
+            <td>{{ row["state"] }}</td>
+            <td>
+               <!-- 버튼과 이벤트 처리를 위한 스크립트 추가 -->
+               <button onclick="changeText(this)">대여 가능</button>
+            </td>
+         </tr>
+      {% endfor %}
+
+   </table>
+
+   <script>
+      // JavaScript를 사용하여 버튼의 텍스트를 변경하는 함수 정의
+      function changeText(button) {
+         // 현재 버튼의 텍스트 확인 후 변경
+         if (button.innerHTML === "대여 가능") {
+            button.innerHTML = "대여중";
+         } else {
+            button.innerHTML = "대여 가능";
+         }
+      }
+   </script>
+
+</body>
+</html>

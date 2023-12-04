@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login</title>
+</head>
+<body>
+    <h1>ID와 password를 입력하시오.</h1>
+
+    <form method="POST" action="{{ url_for('log_in') }}">
+        <label for="my_id">ID:</label>
+        <input type="text" id="my_id" name="my_id" required>
+        <label for="my_password">password:</label>
+        <input type="text" password="my_password" name="my_password" required>
+        <button type="submit">로그인</button>
+    </form>

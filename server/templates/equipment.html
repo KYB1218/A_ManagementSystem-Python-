@@ -1,0 +1,20 @@
+<html>
+   <body>
+      <form method="POST" action="{{ url_for('equipment_info') }}" enctype="multipart/form-data">
+         <h3>Equipment Information</h3>
+         기자제<br>
+         <input type = "text" name = "equipment_name" /></br>
+
+         Password<br>
+         <input type = "text" name = "equip_password" /></br>
+         
+         State<br>
+         <input type = "text" name = "state" /></br>
+
+         <label for="equip_file">File:</label>
+         <input type="file" name="equipment_file" id="equip_file"></br>
+
+         <input type="submit" value="등록" /><br>
+      </form>
+   </body>
+</html>
