@@ -39,9 +39,9 @@ db = SQLAlchemy()
 app.config.from_object(config)
 db.init_app(app)
 
-migrate = Migrate(app, db)
-
 import models
+
+migrate = Migrate(app, db)
 
 # api 등록
 api.add_namespace(User, "/User")

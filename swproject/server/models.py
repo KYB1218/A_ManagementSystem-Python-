@@ -1,7 +1,6 @@
 from sqlalchemy.sql import func
 from flask_sqlalchemy import SQLAlchemy
 
-
 db = SQLAlchemy()
 
 class User(db.Model):
@@ -13,15 +12,12 @@ class User(db.Model):
         self.ID = ID
         self.Name = Name
         self.PassWd = PassWd
-    
-    def __repr__(self):
-        return '<%s,%s,%s>' % (self.ID, self.Name, self.PassWd)
 
 class Equipment(db.Model):
     EquipID = db.Column(db.String, unique = True, primary_key = True)
     EquipName = db.Column(db.String)
     EquipInfo = db.Column(db.String)
-    EquipState = db.Column(db.Boolean, default = True)
+    EquipState = db.Column(db.String)
 
     def __init__(self, EquipID=None, EquipName = None, EquipInfo = None, EquipState = None):
         self.EquipID = EquipID
@@ -29,35 +25,39 @@ class Equipment(db.Model):
         self.EquipInfo = EquipInfo
         self.EquipState = EquipState
 
-    def __repr__(self):
-         return '<%s,%s,%s>' % (self.EquipID, self.EquipName, self.EquipInfo)    
-
 class DeleteLog(db.Model):
-    DeleteLogID = db.Column(db.String, primary_key = True, unique = True)
-    EquipID = db.Column(db.String, db.ForeignKey('Equipment.EquipID'))
-    EquipName = db.Column(db.String, db.ForeignKey('Equipment.EquipName'))
-    EquipInfo = db.Column(db.String, db.ForeignKey('Equipment.EquipInfo'))
-    EquipState = db.Column(db.Boolean, db.ForeignKey('Equipment.EquipState'))
-    ID = db.Column(db.String, db.ForeignKey('User.ID'))
-    Name = db.Column(db.String, db.ForeignKey('User.Name'))
+    DeleteLogID = db.Column(db.Integer, primary_key = True, unique = True, autoincrement=True)
+    DeletedEquipID = db.Column(db.String)
+    DeletedEquipName = db.Column(db.String)
+    DeletedEquipInfo = db.Column(db.String)
+    DeletedEquipState = db.Column(db.String)
+    DeleterID = db.Column(db.String)
+    DeleterName = db.Column(db.String)
     DeletedDate = db.Column(db.Date, default=func.now())
 
-    def __init__ (self, DeleteLogID = None):
+    def __init__ (self, DeleteLogID, DeletedEquipID, DeletedEquipName, DeletedEquipInfo,
+                  DeletedEquipState, DeletedDate, DeleterID, DeleterName):
         self.DeleteLogID = DeleteLogID
-    
-    def __repr__(self):
-        return '<%s>' % (self.DeleteLogID)
+        self.DeletedEquipID = DeletedEquipID
+        self.DeletedEquipName = DeletedEquipName
+        self.DeletedEquipInfo = DeletedEquipInfo
+        self.DeletedEquipState = DeletedEquipState
+        self.DeleterID = DeleterID
+        self.DeleterName = DeleterName
+        self.DeletedDate = DeletedDate
     
 class ManageLog(db.Model):
-    ManageLogID = db.Column(db.String, primary_key = True, unique = True)
-    EquipID = db.Column(db.String, db.ForeignKey('Equipment.EquipID'))
-    EquipState = db.Column(db.Boolean, db.ForeignKey('Equipment.EquipState'))
-    ID = db.Column(db.String, db.ForeignKey('User.ID'))
-    Name = db.Column(db.String, db.ForeignKey('User.Name'))
+    ManageLogID = db.Column(db.String, primary_key = True, unique = True, autoincrement=True)
+    UsedEquipID = db.Column(db.String)
+    UsedEquipState = db.Column(db.String)
+    UserID = db.Column(db.String)
+    UserName = db.Column(db.String)
     ManageLogDate = db.Column(db.Date, default=func.now())
 
-    def __init__ (self, ManageLogID = None):
+    def __init__ (self, ManageLogID, UsedEquipID, UsedEquipState, UserID, UserName, ManageLogDate):
         self.ManageLogID = ManageLogID
-
-    def __repr__(self):
-        return '<%s>' % (self.ManageLogID)
+        self.UsedEquipID = UsedEquipID
+        self.UsedEquipState = UsedEquipState
+        self.UserID = UserID
+        self.UserName = UserName
+        self.ManageLogDate = ManageLogDate
