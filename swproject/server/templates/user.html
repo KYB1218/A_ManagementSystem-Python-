@@ -1,0 +1,20 @@
+<html>
+   <body>
+      <form method="POST" action="{{ url_for('user_info') }}" enctype="multipart/form-data">
+         <h3>User Information</h3>
+         Id<br>
+         <input type = "text" name = "user_id" /></br>
+
+         Password<br>
+         <input type = "text" name = "user_password" /></br>
+         
+         Birth<br>
+         <input type = "text" name = "birth"/></br>
+
+
+         Name<br>
+         <textarea name = "name" ></textarea><br>
+         <input type = "submit" value = "submit"/><br>
+      </form>
+   </body>
+</html>
