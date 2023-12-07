@@ -4,7 +4,8 @@ from flask import request
 from flask_restx import Resource, Api, Namespace, fields
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import bcrypt  # 로그인 비밀번호 암호화를 위한 라이브러리
-from flask_jwt_extended import jwt_required, create_access_token
+from flask_jwt_extended import jwt_required
+from flask_jwt_extended import get_jwt_identity
 
 import models
 
@@ -32,27 +33,56 @@ parser.add_argument("Authorization", location="headers")  # 헤더를 입력받�
 
 #기자재 목록    
 @DeleteLog.route("")
-class DeleteLogList(Resource):      
+class DeleteLogList(Resource):
+       @jwt_required()
        @DeleteLog.expect(parser)
        def get(self):
         """DeleteLog 목록을 반환하는 API"""
 
-        deleteLog_list = []
-        deleteLogs = db.session.query(models.DeleteLog).all()
+        deletelog_list = []
+        deletelogs = db.session.query(models.DeleteLog).all()
 
-        for deleteLog in deleteLogs:
-            deleteLog_data = {
-                "DeleteLogID": deleteLog.DeleteLogID,
-                "DeletedEquipID": deleteLog.DeletedEquipID,
-                "DeletedEquipName": deleteLog.DeletedEquipName,
-                "DeletedEquipInfo": deleteLog.DeletedEquipInfo,
-                "DeletedEquipState": deleteLog.DeletedEquipState,
-                "DeleterID": deleteLog.DeleterID,
-                "DeleterName": deleteLog.DeleterName,
-                "DeletedDate": deleteLog.DeletedDate
+        for deletelog in deletelogs:
+            deletelog_data = {
+                "DeleteLogID": deletelog.DeleteLogID,
+                "DeletedEquipID": deletelog.DeletedEquipID,
+                "DeletedEquipName": deletelog.DeletedEquipName,
+                "DeletedEquipInfo": deletelog.DeletedEquipInfo,
+                "DeletedEquipState": deletelog.DeletedEquipState,
+                "DeleterID": deletelog.DeleterID,
+                "DeleterName": deletelog.DeleterName,
+                "DeletedDate": deletelog.DeletedDate
             }
-            deleteLog_list.append(deleteLog_data)
+            deletelog_list.append(deletelog_data)
 
-        return deleteLog_list
+        return deletelog_list
        
-       
+@DeleteLog.route("/Restore/<DID>")
+class RestoreEquip(Resource):
+    @jwt_required()
+    @DeleteLog.expect(parser)
+    def put(self, DID):
+        """DeleteLog에 있는 정보를 복원하여 Equipment 테이블에 추가하는 API\n
+        DeleteLog의 ID를 입력받아 해당 ID의 정보를 검색하고 Equipment 테이블에 추가한다.\n
+        jwt 인증의 경우 헤더에 Authorization: Bearer jwt를 입력하여야 한다."""
+
+        delete_log = models.DeleteLog.query.filter_by(DeleteLogID=DID).first()
+
+        if delete_log:
+            equipment_data = {
+                "EquipID": delete_log.DeletedEquipID,
+                "EquipName": delete_log.DeletedEquipName,
+                "EquipInfo": delete_log.DeletedEquipInfo,
+                "EquipState": delete_log.DeletedEquipState
+            }
+
+            equipment = models.Equipment(**equipment_data)
+            db.session.add(equipment)
+            db.session.commit() 
+
+            db.session.delete(delete_log)
+            db.session.commit()
+
+            return f"Deleted Equipment {delete_log.DeletedEquipID} restored successfully."
+        else:
+            return f"DeleteLog {DID} not found."

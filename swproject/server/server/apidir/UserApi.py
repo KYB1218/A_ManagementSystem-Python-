@@ -25,8 +25,7 @@ UserField = User.model(
 parser = User.parser()  # 헤더를 추가하기 위한 변수
 parser.add_argument("Authorization", location="headers")  # 헤더를 입력받기 위해 기대 입력값을 추가
 
-
-@User.route("",methods=['GET', 'POST'])  # 회원가입의 URL
+@User.route("",methods=['POST'])  # 회원가입의 URL
 class UserAdd(Resource):
     @User.expect(UserField)  # swagger를 통해 데이터베이스를 조작하도록 등록
     def post(self):
@@ -55,6 +54,19 @@ class UserAdd(Resource):
             return str(e.args)
 
         return 0
+    
+@User.route("/CheckID/<UID>", methods=['GET'])
+class CheckDuplicate(Resource):
+    def get(self, UID):
+        """아이디 중복 확인하는 API\n
+        기존에 등록된 아이디와 입력한 아이디를 비교하여 중복 여부를 반환한다.
+        """
+        existing_user = models.User.query.filter_by(ID=UID).first()
+        if existing_user:
+            return {"message": "중복된 아이디입니다."}, 409  # 409는 Conflict 코드입니다.
+        else:
+            return {"message": "사용 가능한 아이디입니다."}, 200  # 200은 성공 코드입니다.
+
 
 @User.route("/<UID>")
 class UserEdit(Resource):

@@ -33,7 +33,7 @@ class DeleteLog(db.Model):
     DeletedEquipState = db.Column(db.String)
     DeleterID = db.Column(db.String)
     DeleterName = db.Column(db.String)
-    DeletedDate = db.Column(db.Date, default=func.now())
+    DeletedDate = db.Column(db.Integer)
 
     def __init__ (self, DeleteLogID, DeletedEquipID, DeletedEquipName, DeletedEquipInfo,
                   DeletedEquipState, DeletedDate, DeleterID, DeleterName):
@@ -52,7 +52,7 @@ class ManageLog(db.Model):
     UsedEquipState = db.Column(db.String)
     UserID = db.Column(db.String)
     UserName = db.Column(db.String)
-    ManageLogDate = db.Column(db.Date, default=func.now())
+    ManageLogDate = db.Column(db.Integer)
 
     def __init__ (self, ManageLogID, UsedEquipID, UsedEquipState, UserID, UserName, ManageLogDate):
         self.ManageLogID = ManageLogID
